@@ -1,7 +1,6 @@
 export * from "./client.js";
 export * from "./assistant.js";
 export * from "./expr.js";
-export * from "./if.js";
 export * from "./infer.js";
 export * from "./json.js";
 export * from "./repeat.js";
