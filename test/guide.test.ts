@@ -1,4 +1,4 @@
-import { range } from "../src/expr/range.js";
+import { range } from "../src/range.js";
 import {
   AI,
   assistant,

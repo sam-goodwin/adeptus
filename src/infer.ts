@@ -1,4 +1,6 @@
-import type { EvalBlock, Expr, LanguageGenerator } from "../index.js";
+import { EvalBlock } from "./eval.js";
+import { Expr } from "./expr.js";
+import { LanguageGenerator } from "./language-generator.js";
 
 type Input = Expr | string | undefined | null | number | boolean;
 

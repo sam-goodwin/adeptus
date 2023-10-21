@@ -1,3 +1,9 @@
+/**
+ * Trims the template literal to the minimum indentation.
+ *
+ * This allows developers to write string templates with indentation that matches the
+ * surrounding code which is a major pain point when writing LLM apps in TypeScript.
+ */
 export function trimTemplate(template: TemplateStringsArray): string[] {
   if (template[0].startsWith("\n")) {
     const lines = template[0].split("\n");

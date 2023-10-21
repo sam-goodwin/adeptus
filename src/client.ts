@@ -1,16 +1,16 @@
 import { OpenAI } from "openai";
 import { encodingForModel } from "js-tiktoken";
-import { LanguageGenerator } from "./interpreter/language-generator.js";
-import { Slot, isSlot } from "./expr/slot.js";
-import { isStringSlot } from "./expr/string.js";
-import { Expr } from "./expr/expr.js";
+import { LanguageGenerator } from "./language-generator.js";
+import { Slot, isSlot } from "./slot.js";
+import { isStringSlot } from "./string.js";
+import { Expr } from "./expr.js";
 import {
   isMatchSlot,
   isNumberSlot,
   isRepeatSlot,
   isSelectSlot,
 } from "./index.js";
-import { isRangeSlot } from "./expr/range.js";
+import { isRangeSlot } from "./range.js";
 
 const gpt3 = encodingForModel("gpt-3.5-turbo");
 

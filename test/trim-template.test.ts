@@ -1,4 +1,4 @@
-import { trimTemplate } from "../src/util/trim-template.js";
+import { trimTemplate } from "../src/trim-template.js";
 
 function t(template: TemplateStringsArray, ...args: any[]) {
   return trimTemplate(template);
