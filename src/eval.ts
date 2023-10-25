@@ -1,11 +1,12 @@
-import type { Expr } from "./expr.js";
-import type { Json } from "./json.js";
-import type { MatchSlot } from "./match.js";
-import type { NumberSlot } from "./number.js";
-import type { RangeSlot } from "./range.js";
-import type { RepeatSlot } from "./repeat.js";
-import type { Select } from "./select.js";
-import type { StringSlot } from "./string.js";
+import type { Expr } from "./expr/expr.js";
+import type { Json } from "./expr/json.js";
+import type { MatchSlot } from "./expr/match.js";
+import type { NumberSlot } from "./expr/number.js";
+import type { RangeSlot } from "./expr/range.js";
+import type { RepeatSlot } from "./expr/repeat.js";
+import type { Select } from "./expr/select.js";
+import type { StringSlot } from "./expr/string.js";
+import type { ZeroOrManySlot } from "./expr/zero-or-many.js";
 
 /**
  * Compiles a Program to its input/output contract.
@@ -18,7 +19,7 @@ export type Eval<E> = E extends StringSlot
   ? U
   : E extends MatchSlot
   ? string
-  : E extends RepeatSlot<infer E>
+  : E extends RepeatSlot<infer E> | ZeroOrManySlot<infer E>
   ? EvalBlock<E> extends infer E extends any[]
     ? (1 extends E["length"] ? E[0] : E)[]
     : never

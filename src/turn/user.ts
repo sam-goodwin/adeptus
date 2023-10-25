@@ -1,4 +1,4 @@
-import type { Expr } from "./expr.js";
+import type { Expr } from "../expr/expr.js";
 import { createTurn, type Turn } from "./turn.js";
 
 export function user<E extends Expr[]>(

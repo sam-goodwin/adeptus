@@ -5,6 +5,7 @@ import type { RangeSlot } from "./range.js";
 import type { RepeatSlot } from "./repeat.js";
 import type { Select } from "./select.js";
 import type { StringSlot } from "./string.js";
+import { ZeroOrManySlot } from "./zero-or-many.js";
 
 export const Kind = Symbol.for("Kind");
 
@@ -12,7 +13,8 @@ export type Expr =
   | Literal<any>
   | MatchSlot
   | NumberSlot
+  | RangeSlot
+  | RepeatSlot<any>
   | Select<string>
   | StringSlot
-  | RangeSlot
-  | RepeatSlot<any>;
+  | ZeroOrManySlot<any>;

@@ -1,25 +1,30 @@
-import { range } from "../src/range.js";
 import {
-  AI,
+  Client,
   assistant,
-  repeat,
+  generate,
   match,
   number,
+  repeat,
   select,
   string,
 } from "../src/index.js";
+import { range } from "../src/expr/range.js";
+import ts from "typescript";
 
 import dotenv from "dotenv";
+import { OpenAIModel } from "../src/models/openai.js";
 
 dotenv.config();
 
-const ai = new AI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+const ai = new Client(
+  new OpenAIModel({
+    apiKey: process.env.OPENAI_API_KEY!,
+  })
+);
 
 test("should generate person", async () => {
   const person = await ai.eval(function* () {
-    const [name, age, armor, cls, strength, items] = yield* assistant`
+    const [name, age, armor, cls, strength, items] = yield* generate`
       The following is a character profile for an RPG game in JSON format.
       \`\`\`json
       {

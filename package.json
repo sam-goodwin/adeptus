@@ -1,5 +1,5 @@
 {
-  "name": "impose",
+  "name": "adeptus",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -21,9 +21,6 @@
       "require": "./lib/cjs/jsx/index.js"
     }
   },
-  "workspaces": [
-    "type/mock"
-  ],
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b -w",

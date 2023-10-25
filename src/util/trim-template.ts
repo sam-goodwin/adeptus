@@ -17,7 +17,7 @@ export function trimTemplate(template: TemplateStringsArray): string[] {
         }
         return lines
           .map((line, j) => {
-            if (i > 0 && j === 0 && line.trim() !== "") {
+            if (i > 0 && j === 0) {
               // ${val}  text
               // this catches the case where text proceeds a variable - we should not trim it
               return line;

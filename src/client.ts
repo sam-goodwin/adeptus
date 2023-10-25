@@ -1,36 +1,24 @@
-import { OpenAI } from "openai";
 import { encodingForModel } from "js-tiktoken";
-import { LanguageGenerator } from "./language-generator.js";
-import { Slot, isSlot } from "./slot.js";
-import { isStringSlot } from "./string.js";
-import { Expr } from "./expr.js";
+import { Expr } from "./expr/expr.js";
+import { isRangeSlot } from "./expr/range.js";
+import { Slot, isSlot } from "./expr/slot.js";
+import { isStringSlot } from "./expr/string.js";
+import { isZeroOrMany } from "./expr/zero-or-many.js";
 import {
   isMatchSlot,
   isNumberSlot,
   isRepeatSlot,
   isSelectSlot,
 } from "./index.js";
-import { isRangeSlot } from "./range.js";
+import type { IModel, TextLogitBias } from "./models/model.js";
+import { TextGenerator } from "./turn/text-generator.js";
 
 const gpt3 = encodingForModel("gpt-3.5-turbo");
 
-export interface LLMClient {}
+export class Client {
+  constructor(readonly model: IModel) {}
 
-export class AI {
-  readonly openAI: OpenAI;
-
-  constructor(
-    readonly options: {
-      apiKey: string;
-    }
-  ) {
-    this.openAI = new OpenAI({
-      apiKey: options.apiKey,
-      timeout: 60_000,
-    });
-  }
-
-  public async eval<T>(generator: () => LanguageGenerator<T>): Promise<T> {
+  public async eval<T>(generator: () => TextGenerator<T>): Promise<T> {
     const gen = generator();
     let next;
     let slots: any[] | undefined = [];
@@ -39,10 +27,10 @@ export class AI {
       const turn = next.value;
       const result = await this.evalTemplate(prompt, turn.template, turn.exprs);
       slots = result.slots;
-      prompt.push(...result.prompt);
     }
     return next.value as T;
   }
+
   async evalTemplate(
     prompt: string[],
     template: string[],
@@ -68,19 +56,18 @@ export class AI {
         };
       }
       if (isSlot(expr)) {
-        const stream = await this.openAI.completions.create({
-          model: "gpt-3.5-turbo-instruct",
+        const stream = await this.model.next({
           prompt: prompt.join(""),
-          stream: true,
           stop: expr.options.stop ? [expr.options.stop].flat() : undefined,
           // TODO: add support for customizing these options
           n: 1,
           temperature: 0,
           max_tokens: 100,
-          logit_bias: computeBias(expr),
+          bias: computeBias(expr),
         });
 
-        slots.push(await evalSlot(expr));
+        const val = await evalSlot(expr);
+        slots.push(val);
 
         async function evalSlot(expr: Slot) {
           if (isStringSlot(expr)) {
@@ -169,10 +156,26 @@ export class AI {
               const result = await self.evalTemplate(
                 prompt,
                 expr.options.template,
-                expr.options.expr
+                expr.options.exprs
               );
               prompt = result.prompt;
-              if (expr.options.expr.length === 1) {
+              if (expr.options.exprs.length === 1) {
+                // when there is only one expression, we flatten it
+                slots.push(...result.slots);
+              } else {
+                slots.push(result.slots);
+              }
+            }
+            return slots;
+          } else if (isZeroOrMany(expr)) {
+            let slots = [];
+            while (true) {
+              const result = await self.evalTemplate(
+                prompt,
+                expr.options.template,
+                expr.options.exprs
+              );
+              if (expr.options.exprs.length === 1) {
                 // when there is only one expression, we flatten it
                 slots.push(...result.slots);
               } else {
@@ -191,26 +194,18 @@ export class AI {
   }
 }
 
-type LogitBias = {
-  [token: number]: number;
-};
-
-function computeBias(slot: Expr): LogitBias | undefined {
+function computeBias(slot: Expr): TextLogitBias | undefined {
   if (isSelectSlot(slot)) {
-    return Object.fromEntries(
-      slot.options.items.flatMap((item) =>
-        gpt3.encode(item).map((e) => [e, 100])
-      )
-    );
+    return Object.fromEntries(slot.options.items.map((item) => [item, 100]));
   } else if (isRangeSlot(slot)) {
     const length = slot.options.to - slot.options.from;
     if (length > 1_000) {
       console.warn(`Range is too large: ${length}`);
       return undefined;
     }
-    const bias: LogitBias = {};
+    const bias: TextLogitBias = {};
     for (let i = slot.options.from; i <= slot.options.to; i++) {
-      bias[gpt3.encode(i.toString())[0]] = 1;
+      bias[i.toString()] = 1;
     }
     return bias;
   }

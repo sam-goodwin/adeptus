@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "include": ["src"],
-  "exclude": ["test/mock", "src/package.json"],
+  "exclude": ["src/package.json"],
   "compilerOptions": {
     "outDir": "lib/cjs",
     "module": "CommonJS",

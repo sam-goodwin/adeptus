@@ -1,5 +1,5 @@
-import { trimTemplate } from "./trim-template.js";
-import { Kind, Expr } from "./expr.js";
+import { trimTemplate } from "../util/trim-template.js";
+import { Kind, Expr } from "../expr/expr.js";
 import type { Role } from "./role.js";
 
 export type Turn<

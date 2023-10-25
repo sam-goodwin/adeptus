@@ -7,13 +7,13 @@ export function isRepeatSlot(expr: Expr): expr is RepeatSlot<Expr[]> {
 
 export function repeat(length: number) {
   return <E extends Expr[]>(template: TemplateStringsArray, ...expr: E) =>
-    new RepeatSlot({ length, template: [...template.raw], expr });
+    new RepeatSlot({ length, template: [...template.raw], exprs: expr });
 }
 
 export interface RepeatOptions<E extends Expr[]> extends SlotOptions {
   length: number;
   template: string[];
-  expr: E;
+  exprs: E;
 }
 
 export class RepeatSlot<E extends Expr[]> extends Slot<"repeat"> {
