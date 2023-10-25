@@ -1,11 +1,11 @@
-# guidance-ts
+# Adeptus
 
-`guidance-ts` is a TypeScript-native implementation of the [Guidance](https://github.com/guidance-ai/guidance) Python project, except instead of mustache templates, it makes use of TypeScript's tagged template literals and generators so you can use the full power of code to control large language model generation.
+Adeptus is a TypeScript-native implementation of the [Guidance](https://github.com/guidance-ai/guidance) Python project, except instead of mustache templates, it makes use of TypeScript's tagged template literals and generators so you can use the full power of code to control large language model generation.
 
 # Install
 
 ```
-npm install guidance-ts
+npm install adeptus
 ```
 
 # Example

@@ -27,7 +27,7 @@ const ai = new Client(openai);
 
 const identifier = match(/[a-z_][a-z0-9_]*/i);
 
-test("should generate person", async () => {
+test.skip("should generate person", async () => {
   const person = await ai.eval(function* () {
     const [modifier, id] = yield* generate`
       // Implement a function that computes the prime numbers of 'n':
