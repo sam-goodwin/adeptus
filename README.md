@@ -12,7 +12,7 @@ npm install adeptus
 
 ```ts
 const person = await ai.eval(function* () {
-  const [name, age, armor, cls, strength, items] = yield* assistant`
+  const [name, age, armor, cls, strength, items] = yield* generate`
     The following is a character profile for an RPG game in JSON format.
     \`\`\`json
     {
